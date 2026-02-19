@@ -1,0 +1,104 @@
+server:
+  port: ${API_GATEWAY_PORT:8080}
+
+spring:
+  application:
+    name: api_gateway
+  cloud:
+    gateway:
+      default-filters:
+        - AddResponseHeader=X-Gateway, api_gateway
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - ${GATEWAY_ALLOWED_ORIGIN_1:http://localhost:3000}
+              - ${GATEWAY_ALLOWED_ORIGIN_2:http://localhost:5173}
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+      routes:
+        - id: auth-direct
+          uri: ${AUTH_SERVICE_URL:http://localhost:8081}
+          predicates:
+            - Path=/auth/**
+
+        - id: user-direct
+          uri: ${USER_SERVICE_URL:http://localhost:8082}
+          predicates:
+            - Path=/users/**,/teams/**,/specialties/**,/me,/me/**
+
+        - id: tasks-direct
+          uri: ${TASKS_SERVICE_URL:http://localhost:8083}
+          predicates:
+            - Path=/tasks/**
+
+        - id: projects-direct
+          uri: ${PROJECTS_SERVICE_URL:http://localhost:8084}
+          predicates:
+            - Path=/projects/**
+
+        - id: search-direct
+          uri: ${SEARCH_SERVICE_URL:http://localhost:8085}
+          predicates:
+            - Path=/search/**
+
+        - id: dashboards-direct
+          uri: ${DASHBOARDS_SERVICE_URL:http://localhost:8086}
+          predicates:
+            - Path=/dashboards/**
+
+        - id: auth-api
+          uri: ${AUTH_SERVICE_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - RewritePath=/api/auth/?(?<segment>.*), /auth/${segment}
+
+        - id: user-api
+          uri: ${USER_SERVICE_URL:http://localhost:8082}
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - RewritePath=/api/user/?(?<segment>.*), /${segment}
+
+        - id: tasks-api
+          uri: ${TASKS_SERVICE_URL:http://localhost:8083}
+          predicates:
+            - Path=/api/tasks/**
+          filters:
+            - RewritePath=/api/tasks/?(?<segment>.*), /tasks/${segment}
+
+        - id: projects-api
+          uri: ${PROJECTS_SERVICE_URL:http://localhost:8084}
+          predicates:
+            - Path=/api/projects/**
+          filters:
+            - RewritePath=/api/projects/?(?<segment>.*), /projects/${segment}
+
+        - id: search-api
+          uri: ${SEARCH_SERVICE_URL:http://localhost:8085}
+          predicates:
+            - Path=/api/search/**
+          filters:
+            - RewritePath=/api/search/?(?<segment>.*), /search/${segment}
+
+        - id: dashboards-api
+          uri: ${DASHBOARDS_SERVICE_URL:http://localhost:8086}
+          predicates:
+            - Path=/api/dashboards/**
+          filters:
+            - RewritePath=/api/dashboards/?(?<segment>.*), /dashboards/${segment}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

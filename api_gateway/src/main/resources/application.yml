@@ -1,0 +1,74 @@
+server:
+  port: ${API_GATEWAY_PORT:8080}
+
+spring:
+  application:
+    name: api_gateway
+  cloud:
+    gateway:
+      default-filters:
+        - AddResponseHeader=X-Gateway, api_gateway
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - ${GATEWAY_ALLOWED_ORIGIN_1:http://localhost:3000}
+              - ${GATEWAY_ALLOWED_ORIGIN_2:http://localhost:5173}
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+      routes:
+        - id: auth-api
+          uri: http://auth-service:8081
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=1
+
+        - id: user-api
+          uri: http://user-service:8082
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - StripPrefix=2
+
+        - id: tasks-api
+          uri: http://tasks-service:8083
+          predicates:
+            - Path=/api/tasks/**
+          filters:
+            - StripPrefix=1
+
+        - id: projects-api
+          uri: http://projects-service:8084
+          predicates:
+            - Path=/api/projects/**
+          filters:
+            - StripPrefix=1
+
+        - id: search-api
+          uri: http://search-service:8085
+          predicates:
+            - Path=/api/search/**
+          filters:
+            - StripPrefix=1
+
+        - id: dashboards-api
+          uri: http://dashboards-service:8086
+          predicates:
+            - Path=/api/dashboards/**
+          filters:
+            - StripPrefix=1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

@@ -1,0 +1,4 @@
+ALTER TABLE user_profile
+    ADD COLUMN IF NOT EXISTS email_user VARCHAR(255),
+    ADD COLUMN IF NOT EXISTS phone_user VARCHAR(64),
+    ADD COLUMN IF NOT EXISTS telegram_user VARCHAR(128);

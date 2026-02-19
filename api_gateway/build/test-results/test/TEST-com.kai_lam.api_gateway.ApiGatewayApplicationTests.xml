@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.kai_lam.api_gateway.ApiGatewayApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-02-19T12:03:04.464Z" hostname="MacBook-Pro-Viktor.local" time="2.354">
+  <properties/>
+  <testcase name="contextLoads()" classname="com.kai_lam.api_gateway.ApiGatewayApplicationTests" time="0.425"/>
+  <system-out><![CDATA[15:03:04.554 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.kai_lam.api_gateway.ApiGatewayApplicationTests]: ApiGatewayApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+15:03:04.612 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.kai_lam.api_gateway.ApiGatewayApplication for test class com.kai_lam.api_gateway.ApiGatewayApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.2)
+
+2026-02-19T15:03:05.052+03:00  INFO 75247 --- [api_gateway] [    Test worker] c.k.a.ApiGatewayApplicationTests         : Starting ApiGatewayApplicationTests using Java 21.0.4 with PID 75247 (started by li6ri9ka in /Users/li6ri9ka/Documents/Личные проекты/KAI_LAM/api_gateway)
+2026-02-19T15:03:05.053+03:00  INFO 75247 --- [api_gateway] [    Test worker] c.k.a.ApiGatewayApplicationTests         : No active profile set, falling back to 1 default profile: "default"
+2026-02-19T15:03:05.596+03:00  INFO 75247 --- [api_gateway] [    Test worker] o.s.cloud.context.scope.GenericScope     : BeanFactory id=0c0d6daa-0c3a-3631-b7a2-c660030fd106
+2026-02-19T15:03:06.041+03:00  INFO 75247 --- [api_gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [After]
+2026-02-19T15:03:06.041+03:00  INFO 75247 --- [api_gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Before]
+2026-02-19T15:03:06.041+03:00  INFO 75247 --- [api_gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Between]
+2026-02-19T15:03:06.042+03:00  INFO 75247 --- [api_gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Cookie]
+2026-02-19T15:03:06.042+03:00  INFO 75247 --- [api_gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Header]
+2026-02-19T15:03:06.042+03:00  INFO 75247 --- [api_gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Host]
+2026-02-19T15:03:06.042+03:00  INFO 75247 --- [api_gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Method]
+2026-02-19T15:03:06.042+03:00  INFO 75247 --- [api_gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Path]
+2026-02-19T15:03:06.042+03:00  INFO 75247 --- [api_gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Query]
+2026-02-19T15:03:06.042+03:00  INFO 75247 --- [api_gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [ReadBody]
+2026-02-19T15:03:06.042+03:00  INFO 75247 --- [api_gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [RemoteAddr]
+2026-02-19T15:03:06.042+03:00  INFO 75247 --- [api_gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [XForwardedRemoteAddr]
+2026-02-19T15:03:06.042+03:00  INFO 75247 --- [api_gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Weight]
+2026-02-19T15:03:06.042+03:00  INFO 75247 --- [api_gateway] [    Test worker] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [CloudFoundryRouteService]
+2026-02-19T15:03:06.205+03:00  INFO 75247 --- [api_gateway] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-02-19T15:03:06.389+03:00  INFO 75247 --- [api_gateway] [    Test worker] c.k.a.ApiGatewayApplicationTests         : Started ApiGatewayApplicationTests in 1.582 seconds (process running for 2.391)
+]]></system-out>
+  <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build what is described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/Users/li6ri9ka/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.15.11/a38b16385e867f59a641330f0362ebe742788ed8/byte-buddy-agent-1.15.11.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+</testsuite>

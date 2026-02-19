@@ -1,0 +1,219 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: kai_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+    ports:
+      - "5439:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  kafka:
+    image: docker.redpanda.com/redpandadata/redpanda:v24.3.8
+    container_name: kai_kafka
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp
+      - "1"
+      - --memory
+      - 1G
+      - --reserve-memory
+      - 0M
+      - --node-id
+      - "0"
+      - --check=false
+      - --kafka-addr
+      - 0.0.0.0:9092
+      - --advertise-kafka-addr
+      - kafka:9092
+    ports:
+      - "9092:9092"
+    restart: unless-stopped
+
+  auth_service:
+    build: ./auth_service
+    container_name: kai_auth_service
+    hostname: auth-service
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    environment:
+      SERVER_PORT: 8081
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth_user
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 12345
+      APP_SECURITY_JWT_SECRET: change-this-secret-key-change-this-secret-key-change-this-secret-key
+      APP_SECURITY_COOKIE_REFRESH_SECURE: "false"
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_FLYWAY_ENABLED: "false"
+    ports:
+      - "8081:8081"
+
+  user_service:
+    build: ./user_service
+    container_name: kai_user_service
+    hostname: user-service
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    environment:
+      SERVER_PORT: 8082
+      USER_SERVICE_DB_URL: jdbc:postgresql://postgres:5432/user_service
+      USER_SERVICE_DB_USERNAME: postgres
+      USER_SERVICE_DB_PASSWORD: 12345
+      AUTH_JWT_SECRET: change-this-secret-key-change-this-secret-key-change-this-secret-key
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_FLYWAY_ENABLED: "false"
+    ports:
+      - "8082:8082"
+
+  tasks_service:
+    build: ./tasks_service
+    container_name: kai_tasks_service
+    hostname: tasks-service
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    environment:
+      SERVER_PORT: 8083
+      TASKS_SERVICE_DB_URL: jdbc:postgresql://postgres:5432/tasks_service
+      TASKS_SERVICE_DB_USERNAME: postgres
+      TASKS_SERVICE_DB_PASSWORD: 12345
+      AUTH_JWT_SECRET: change-this-secret-key-change-this-secret-key-change-this-secret-key
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_FLYWAY_ENABLED: "false"
+    ports:
+      - "8083:8083"
+
+  projects_service:
+    build: ./projects_service
+    container_name: kai_projects_service
+    hostname: projects-service
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    environment:
+      SERVER_PORT: 8084
+      PROJECTS_SERVICE_DB_URL: jdbc:postgresql://postgres:5432/projects_service
+      PROJECTS_SERVICE_DB_USERNAME: postgres
+      PROJECTS_SERVICE_DB_PASSWORD: 12345
+      AUTH_JWT_SECRET: change-this-secret-key-change-this-secret-key-change-this-secret-key
+      USER_SERVICE_URL: http://user-service:8082
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_FLYWAY_ENABLED: "false"
+    ports:
+      - "8084:8084"
+
+  searchandfiltered_service:
+    build: ./searchandfiltered_service
+    container_name: kai_search_service
+    hostname: search-service
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    environment:
+      SEARCH_SERVICE_PORT: 8085
+      SEARCH_SERVICE_DB_URL: jdbc:postgresql://postgres:5432/search_service
+      SEARCH_SERVICE_DB_USERNAME: postgres
+      SEARCH_SERVICE_DB_PASSWORD: 12345
+      AUTH_JWT_SECRET: change-this-secret-key-change-this-secret-key-change-this-secret-key
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_FLYWAY_ENABLED: "false"
+    ports:
+      - "8085:8085"
+
+  dashboards_service:
+    build: ./dashboards_service
+    container_name: kai_dashboards_service
+    hostname: dashboards-service
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    environment:
+      DASHBOARDS_SERVICE_PORT: 8086
+      DASHBOARDS_SERVICE_DB_URL: jdbc:postgresql://postgres:5432/dashboards_service
+      DASHBOARDS_SERVICE_DB_USERNAME: postgres
+      DASHBOARDS_SERVICE_DB_PASSWORD: 12345
+      AUTH_JWT_SECRET: change-this-secret-key-change-this-secret-key-change-this-secret-key
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_FLYWAY_ENABLED: "false"
+    ports:
+      - "8086:8086"
+
+  api_gateway:
+    build: ./api_gateway
+    container_name: kai_api_gateway
+    restart: unless-stopped
+    depends_on:
+      auth_service:
+        condition: service_started
+      user_service:
+        condition: service_started
+      tasks_service:
+        condition: service_started
+      projects_service:
+        condition: service_started
+      searchandfiltered_service:
+        condition: service_started
+      dashboards_service:
+        condition: service_started
+    environment:
+      API_GATEWAY_PORT: 8080
+      AUTH_SERVICE_URL: http://auth-service:8081
+      USER_SERVICE_URL: http://user-service:8082
+      TASKS_SERVICE_URL: http://tasks-service:8083
+      PROJECTS_SERVICE_URL: http://projects-service:8084
+      SEARCH_SERVICE_URL: http://search-service:8085
+      DASHBOARDS_SERVICE_URL: http://dashboards-service:8086
+      GATEWAY_ALLOWED_ORIGIN_1: http://localhost:4200
+      GATEWAY_ALLOWED_ORIGIN_2: http://127.0.0.1:4200
+    ports:
+      - "8080:8080"
+
+  web:
+    build: ./webkailam
+    container_name: kai_web
+    restart: unless-stopped
+    depends_on:
+      api_gateway:
+        condition: service_started
+    ports:
+      - "4200:80"
+
+volumes:
+  postgres_data:
